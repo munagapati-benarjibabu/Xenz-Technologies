@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>XenZ Technologies | AI Skills & Tools</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg-dark:#050b1e;
+  --bg-light:#0d1636;
+  --accent:#4dd6ff;
+  --text:#ffffff;
+  --muted:#b7c0ff;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  background:linear-gradient(180deg,var(--bg-dark),var(--bg-light));
+  color:var(--text);
+  overflow-x:hidden;
+}
+
+/* Snow */
+#snowCanvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* Common */
+.container{
+  width:90%;
+  max-width:1200px;
+  margin:auto;
+  position:relative;
+  z-index:1;
+}
+
+section{
+  padding:56px 0;
+}
+
+p{
+  color:var(--muted);
+  line-height:1.55;
+}
+
+/* Button */
+.btn{
+  display:inline-block;
+  padding:12px 26px;
+  background:var(--accent);
+  color:#000;
+  border-radius:10px;
+  font-weight:600;
+  margin-top:18px;
+  text-decoration:none;
+  transition:.3s;
+}
+.btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 30px rgba(77,214,255,.4);
+}
+
+/* Header */
+header{
+  padding:18px 0;
+  position:relative;
+  z-index:1;
+}
+header .container{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+/* LOGO START */
+.logo{
+  display:flex;
+  align-items:center;
+}
+.logo img{
+  /* Adjusted height to make sure the logo is visible and clear */
+  height: 99px; 
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+/* LOGO END */
+
+/* Nav */
+nav a{
+  margin-left:22px;
+  color:var(--muted);
+  text-decoration:none;
+}
+nav a:hover{
+  color:var(--accent);
+}
+
+/* Hero */
+.hero{
+  text-align:center;
+}
+.hero h1{
+  font-size:2.6rem;
+  max-width:800px;
+  margin:auto;
+}
+.hero p{
+  max-width:700px;
+  margin:14px auto 0;
+}
+
+/* Stats */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:22px;
+  margin-top:40px;
+}
+.stat{
+  background:rgba(255,255,255,.05);
+  padding:24px;
+  border-radius:18px;
+}
+.stat h2{
+  color:var(--accent);
+  font-size:2rem;
+}
+
+/* Features */
+.features{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:24px;
+}
+.feature{
+  background:rgba(255,255,255,.05);
+  padding:26px;
+  border-radius:22px;
+  transition:.3s;
+}
+.feature:hover{
+  transform:translateY(-6px);
+}
+.icon{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#4dd6ff,#9b7bff);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  margin-bottom:14px;
+  color:#000;
+}
+
+/* CTA */
+.cta{
+  background:linear-gradient(135deg,#4dd6ff,#9b7bff);
+  color:#000;
+  text-align:center;
+  border-radius:26px;
+  padding:36px 20px;
+}
+.cta p{
+  color:#000;
+  margin-top:10px;
+}
+
+/* Testimonials */
+.testimonials{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:20px;
+}
+.testimonial{
+  background:rgba(255,255,255,.06);
+  padding:24px;
+  border-radius:20px;
+}
+
+/* Footer */
+footer{
+  border-top:1px solid rgba(255,255,255,.1);
+  padding:22px 0;
+  font-size:.85rem;
+  position:relative;
+  z-index:1;
+}
+.footer-flex{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+}
+.footer-links a{
+  margin-left:18px;
+  color:var(--muted);
+  text-decoration:none;
+}
+.footer-links a:hover{
+  color:var(--accent);
+}
+
+/* Mobile */
+@media(max-width:768px){
+  header .container{
+    flex-direction:column;
+    gap:14px;
+  }
+
+  .logo{
+    justify-content:center;
+  }
+
+  nav{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+
+  nav a{
+    margin:8px 12px 0;
+  }
+
+  .footer-flex{
+    flex-direction:column;
+    gap:10px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="snowCanvas"></canvas>
+
+<header>
+  <div class="container">
+    <div class="logo">
+      <a href="index.html">
+        <img src="../frontend/frontend/xzt.png" alt="XenZ Technologies Logo">
+      </a>
+    </div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="enroll.html">Enroll</a>
+      <a href="ai-tools.html">AI Tools</a>
+      <a href="content.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <h1>Master AI Tools & Skills</h1>
+    <p>Live AI classes, smart tools, and career-ready learning designed for students and professionals.</p>
+    <a href="enroll.html" class="btn">Enroll Now</a>
+
+    <div class="stats">
+      <div class="stat">
+        <h2>10K+</h2>
+        <p>Students Trained</p>
+      </div>
+      <div class="stat">
+        <h2>100+</h2>
+        <p>AI Tools Covered</p>
+      </div>
+      <div class="stat">
+        <h2>4.2★</h2>
+        <p>Average Rating</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="features">
+      <div class="feature">
+        <div class="icon">🤖</div>
+        <h3>Live AI Classes</h3>
+        <p>Daily interactive sessions with real-world use cases.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">⚡</div>
+        <h3>Productivity Tools</h3>
+        <p>AI tools that save hours every day.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">📄</div>
+        <h3>AI Resume Builder</h3>
+        <p>ATS-friendly resumes in minutes.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🎓</div>
+        <h3>Certification</h3>
+        <p>Certificates to boost your profile.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container cta">
+    <h2>Start Your AI Journey Today</h2>
+    <p>• Affordable plans • Live support • Beginner friendly</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="testimonials">
+      <div class="testimonial">
+        <p>“This training completely changed how I work. AI feels easy now.”</p>
+        <strong>— Student</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container footer-flex">
+    <div>© 2026 XenZ Technologies</div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="enroll.html">Enroll</a>
+      <a href="ai-tools.html">AI Tools</a>
+      <a href="content.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const canvas = document.getElementById("snowCanvas");
+const ctx = canvas.getContext("2d");
+
+let w,h;
+function resize(){
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+const flakes=[];
+for(let i=0;i<180;i++){
+  flakes.push({
+    x:Math.random()*w,
+    y:Math.random()*h,
+    r:Math.random()*3+2,
+    s:Math.random()*2+1
+  });
+}
+
+function animate(){
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle="rgba(255,255,255,.8)";
+  flakes.forEach(f=>{
+    f.y+=f.s;
+    if(f.y>h){
+      f.y=-10;
+      f.x=Math.random()*w;
+    }
+    ctx.fillRect(f.x,f.y,f.r,f.r);
+  });
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>

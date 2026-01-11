@@ -1,0 +1,6 @@
+cd D:\Xenztech\xenz\xenz-enroll\backend
+
+node server.js
+
+npx nodemon server.js
+

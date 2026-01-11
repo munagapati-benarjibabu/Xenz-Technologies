@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XenZ AI Tool Selector</title>
+
+<style>
+:root{
+  --primary:#4dd6ff;
+  --bg:#050b1e;
+  --card-bg:rgba(255,255,255,0.07);
+  --text:#ffffff;
+  --muted:#b7c0ff;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* SNOW */
+#snowCanvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:1;
+}
+
+/* HEADER */
+header{
+  position:sticky;
+  top:0;
+  background:rgba(5,11,30,0.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  z-index:5;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:12px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+}
+.logo img{
+  height:59px;
+  width:auto;
+  object-fit:contain;
+  display:block;
+}
+
+nav a{
+  margin-left:22px;
+  text-decoration:none;
+  color:var(--muted);
+  font-size:14px;
+  font-weight:500;
+  transition:.3s;
+}
+nav a:hover{color:var(--primary)}
+
+/* MAIN */
+.main-wrap{
+  position:relative;
+  z-index:2;
+  max-width:1200px;
+  margin:auto;
+  padding:60px 20px;
+  text-align:center;
+}
+
+.intro{
+  margin:20px 0 40px;
+  padding:25px;
+  background:rgba(77,214,255,0.1);
+  border-left:5px solid var(--primary);
+  border-radius:12px;
+  backdrop-filter:blur(6px);
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:25px;
+}
+
+.ai-card{
+  background:var(--card-bg);
+  backdrop-filter:blur(10px);
+  padding:30px;
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,0.1);
+  box-shadow:0 8px 32px rgba(0,0,0,.3);
+  cursor:pointer;
+  transition:.3s;
+  display:flex;
+  flex-direction:column;
+}
+
+.ai-card:hover{
+  transform:translateY(-10px);
+  border-color:var(--primary);
+  background:rgba(77,214,255,.05);
+}
+
+.icon{font-size:3rem;margin-bottom:20px}
+h1{font-size:2.5rem}
+h3{margin:15px 0;color:var(--primary)}
+p{color:var(--muted);font-size:.95rem;flex-grow:1}
+
+.select-btn{
+  margin-top:20px;
+  background:var(--primary);
+  color:#050b1e;
+  border:none;
+  padding:12px;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.3s;
+}
+.select-btn:hover{
+  filter:brightness(1.2);
+  transform:scale(1.02);
+}
+
+/* FOOTER */
+footer{
+  border-top:1px solid rgba(255,255,255,0.1);
+  margin-top:80px;
+  position:relative;
+  z-index:2;
+}
+.footer-flex{
+  max-width:1200px;
+  margin:auto;
+  padding:20px;
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  font-size:13px;
+  color:var(--muted);
+}
+.footer-links a{
+  margin-left:16px;
+  color:var(--muted);
+  text-decoration:none;
+}
+.footer-links a:hover{color:var(--primary)}
+</style>
+</head>
+
+<body>
+
+<canvas id="snowCanvas"></canvas>
+
+<!-- HEADER -->
+<header>
+  <div class="container">
+    <div class="logo">
+      <a href="index.html">
+        <img src="../frontend/frontend/xzt.png" alt="XenZ Technologies Logo">
+      </a>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="enroll.html">Enroll</a>
+      <a href="content.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="main-wrap">
+  <h1>Choose Your AI Tool</h1>
+
+  <div class="intro">
+    <p><strong>AI tools are smart digital assistants.</strong> They learn from data to automate tasks, solve problems, and boost productivity.</p>
+  </div>
+
+  <div class="grid">
+    <div class="ai-card" onclick="location.href='https://eduwriter.ai'">
+      <div class="icon">✍️</div>
+      <h3>Text Generator</h3>
+      <p>Write essays, emails, or code instantly using NLP.</p>
+      <button class="select-btn">Choose Gemini</button>
+    </div>
+
+    <div class="ai-card" onclick="location.href='https://app.klingai.com/global/'">
+      <div class="icon">🎥</div>
+      <h3>AI Studio Video</h3>
+      <p>Create cinematic videos with AI-powered visuals.</p>
+      <button class="select-btn">Choose Kling AI</button>
+    </div>
+
+    <div class="ai-card" onclick="location.href='https://aistudio.google.com/'">
+      <div class="icon">🎬</div>
+      <h3>AI Studios</h3>
+      <p>Prototype, prompt, and export Gemini-powered apps.</p>
+      <button class="select-btn">Choose AI Studio</button>
+    </div>
+
+    <div class="ai-card" onclick="location.href='https://www.flutterflow.io/ai'">
+      <div class="icon">📱</div>
+      <h3>Create Apps Using AI</h3>
+      <p>Build apps using plain English and AI logic.</p>
+      <button class="select-btn">Choose FlutterFlow AI</button>
+    </div>
+
+    <div class="ai-card" onclick="location.href='https://www.canva.com/templates'">
+      <div class="icon">🎨</div>
+      <h3>Image Creator</h3>
+      <p>Generate stunning visuals from text prompts.</p>
+      <button class="select-btn">Choose Image AI</button>
+    </div>
+
+    <div class="ai-card">
+      <div class="icon">📊</div>
+      <h3>Data Analyst</h3>
+      <p>Analyze trends and predict insights using ML.</p>
+      <button class="select-btn">Choose Analysis AI</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-flex">
+    <div>© 2026 XenZ Technologies</div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="enroll.html">Enroll</a>
+      <a href="content.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const canvas=document.getElementById("snowCanvas");
+const ctx=canvas.getContext("2d");
+let w,h,flakes=[];
+function init(){
+  w=canvas.width=innerWidth;
+  h=canvas.height=innerHeight;
+  flakes=[...Array(100)].map(()=>({
+    x:Math.random()*w,
+    y:Math.random()*h,
+    r:Math.random()*2+1,
+    s:Math.random()*1.5+.5,
+    o:Math.random()*.5+.3
+  }));
+}
+function animate(){
+  ctx.clearRect(0,0,w,h);
+  flakes.forEach(f=>{
+    ctx.fillStyle=`rgba(255,255,255,${f.o})`;
+    ctx.beginPath();
+    ctx.arc(f.x,f.y,f.r,0,Math.PI*2);
+    ctx.fill();
+    f.y+=f.s;
+    if(f.y>h)f.y=-5;
+  });
+  requestAnimationFrame(animate);
+}
+addEventListener("resize",init);
+init();animate();
+</script>
+
+</body>
+</html>

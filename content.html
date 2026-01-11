@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>XenZ Technologies | AI Skills & Tools</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg-dark:#050b1e;
+  --bg-light:#0d1636;
+  --accent:#4dd6ff;
+  --text:#ffffff;
+  --muted:#b7c0ff;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  background:linear-gradient(180deg,var(--bg-dark),var(--bg-light));
+  color:var(--text);
+  min-height:100vh;
+}
+
+/* SNOW */
+#snowCanvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* LAYER */
+.content-wrapper{
+  position:relative;
+  z-index:1;
+}
+
+/* HEADER */
+header{
+  position:sticky;
+  top:0;
+  background:rgba(5,11,30,0.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  z-index:10;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:12px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+}
+.logo img{
+  height:59px;
+  width:auto;
+  object-fit:contain;
+}
+
+/* NAV */
+nav a{
+  margin-left:22px;
+  text-decoration:none;
+  color:var(--muted);
+  font-size:14px;
+  font-weight:500;
+  transition:0.3s;
+}
+nav a:hover{
+  color:var(--accent);
+}
+
+/* HERO */
+main{
+  padding:100px 20px;
+  text-align:center;
+}
+
+/* CONTACT */
+.contact-section{
+  padding:80px 20px;
+  text-align:center;
+}
+.section-title{
+  color:var(--accent);
+  font-size:2rem;
+  letter-spacing:2px;
+}
+.section-subtitle{
+  color:var(--muted);
+  margin:10px 0 40px;
+  font-size:0.9rem;
+}
+.contact-container{
+  display:flex;
+  justify-content:center;
+  gap:25px;
+  flex-wrap:wrap;
+  max-width:1000px;
+  margin:auto;
+}
+.contact-card{
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(183,192,255,0.2);
+  padding:40px 30px;
+  border-radius:20px;
+  width:300px;
+  text-decoration:none;
+  transition:0.3s;
+}
+.contact-card:hover{
+  transform:translateY(-10px);
+  border-color:var(--accent);
+  background:rgba(77,214,255,0.08);
+}
+.icon-circle{
+  width:70px;
+  height:70px;
+  margin:auto;
+  border-radius:50%;
+  background:rgba(255,255,255,0.1);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.logo-img{
+  width:35px;
+}
+.contact-card h3{
+  margin-top:20px;
+}
+.contact-card p{
+  font-size:0.85rem;
+  color:var(--muted);
+}
+.btn-label{
+  display:block;
+  margin-top:20px;
+  color:var(--accent);
+  font-size:0.8rem;
+}
+
+/* FOOTER */
+footer{
+  border-top:1px solid rgba(255,255,255,0.1);
+  margin-top:60px;
+}
+.footer-flex{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+  font-size:13px;
+  color:var(--muted);
+}
+.footer-links a{
+  margin-left:16px;
+  color:var(--muted);
+  text-decoration:none;
+}
+.footer-links a:hover{
+  color:var(--accent);
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="snowCanvas"></canvas>
+
+<div class="content-wrapper">
+
+<!-- HEADER -->
+<header>
+  <div class="container">
+    <div class="logo">
+      <a href="index.html">
+        <img src="../frontend/frontend/xzt.png" alt="XenZ Technologies Logo">
+      </a>
+    </div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="enroll.html">Enroll</a>
+      <a href="ai-tools.html">AI Tools</a>
+      
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<main>
+  <h1 style="font-size:3rem">Contact <span style="color:var(--accent)">XenZ Technologies</span></h1>
+  <p style="color:var(--muted)">Advanced AI Skills & Development Tools</p>
+
+
+<!-- CONTACT -->
+<section class="contact-section">
+  <h2 class="section-title">Reach Us</h2>
+  <p class="section-subtitle">Choose your preferred method</p>
+
+  <div class="contact-container">
+    <a href="mailto:your-email@gmail.com" class="contact-card">
+      <div class="icon-circle">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" class="logo-img">
+      </div>
+      <h3>Official Gmail</h3>
+      <p>Drop a mail and we’ll reply within 24 hrs.</p>
+      <span class="btn-label">Send Email →</span>
+    </a>
+
+    <a href="https://wa.me/919640084068" target="_blank" class="contact-card">
+      <div class="icon-circle">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="logo-img">
+      </div>
+      <h3>WhatsApp Support</h3>
+      <p>Instant replies. Zero wait.</p>
+      <span class="btn-label">Chat Now →</span>
+    </a>
+  </div>
+</section>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container footer-flex">
+    <div>© 2026 XenZ Technologies</div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="enroll.html">Enroll</a>
+      <a href="ai-tools.html">AI Tools</a>
+      
+    </div>
+  </div>
+</footer>
+
+</div>
+
+<script>
+const canvas=document.getElementById("snowCanvas");
+const ctx=canvas.getContext("2d");
+let w,h,flakes=[];
+function init(){
+  w=canvas.width=innerWidth;
+  h=canvas.height=innerHeight;
+  flakes=[...Array(150)].map(()=>({
+    x:Math.random()*w,
+    y:Math.random()*h,
+    r:Math.random()*3+2,
+    s:Math.random()*2+1
+  }));
+}
+function draw(){
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle="rgba(255,255,255,0.6)";
+  ctx.beginPath();
+  flakes.forEach(f=>{
+    ctx.moveTo(f.x,f.y);
+    ctx.arc(f.x,f.y,f.r,0,Math.PI*2);
+    f.y+=f.s;
+    if(f.y>h) f.y=-5;
+  });
+  ctx.fill();
+  requestAnimationFrame(draw);
+}
+addEventListener("resize",init);
+init(); draw();
+</script>
+
+</body>
+</html>
