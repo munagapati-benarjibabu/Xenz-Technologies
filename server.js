@@ -115,7 +115,7 @@ app.post("/validate-coupon", (req, res) => {
    SAVE STUDENT (PAYMENT = PENDING)
 ================================================= */
 app.post("/save-student", (req, res) => {
-  const { name, mobile, amount, coupon, status } = req.body;
+  const { name, mobile, email, amount, coupon, status, paymentId } = req.body;
 
   if (!name || !mobile || !amount) {
     return res.json({ success: false, message: "Missing fields" });
@@ -126,8 +126,10 @@ app.post("/save-student", (req, res) => {
   students.push({
     name,
     mobile,
+    email: email || null,
     amount,
     coupon: coupon || null,
+    paymentId: paymentId || null,
     status: status || "PENDING",
     date: new Date().toISOString()
   });
