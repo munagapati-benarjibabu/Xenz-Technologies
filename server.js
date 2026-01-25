@@ -1,195 +1,89 @@
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const fs = require("fs");
-const path = require("path");
+const express = require('express');
+const bodyParser = require('body-parser');
+const Razorpay = require('razorpay');
+const crypto = require('crypto');
+require('dotenv').config();
 
 const app = express();
-app.use(cors());
+const port = process.env.PORT || 3000;
+
+const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || '';
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || '';
+const RAZORPAY_WEBHOOK_SECRET = process.env.RAZORPAY_WEBHOOK_SECRET || '';
+
+// Use JSON body parser for endpoints except webhook which needs raw body
 app.use(bodyParser.json());
 
-/* ================= FILE PATH ================= */
-const DATA_FILE = path.join(__dirname, "students.json");
-
-/* ============ SAFE FILE INIT ============ */
-if (!fs.existsSync(DATA_FILE)) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
-}
-
-/* ============ OTP STORE ============ */
-/*
-{
-  "+919XXXXXXXXX": {
-    otp: "123456",
-    expiresAt: 1234567890
-  }
-}
-*/
-let otpStore = {};
-
-/* =================================================
-   SEND OTP
-================================================= */
-app.post("/send-otp", (req, res) => {
-  const { mobile } = req.body;
-
-  if (!mobile) {
-    return res.json({ success: false, message: "Mobile required" });
-  }
-
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-  otpStore[mobile] = {
-    otp,
-    expiresAt: Date.now() + 5 * 60 * 1000 // 5 minutes
-  };
-
-  console.log("OTP for", mobile, ":", otp);
-
-  res.json({ success: true, message: "OTP sent successfully" });
+const razorpay = new Razorpay({
+  key_id: RAZORPAY_KEY_ID,
+  key_secret: RAZORPAY_KEY_SECRET,
 });
 
-/* =================================================
-   VERIFY OTP
-================================================= */
-app.post("/verify-otp", (req, res) => {
-  const { mobile, otp } = req.body;
-  const record = otpStore[mobile];
+// Create order endpoint
+app.post('/create-order', async (req, res) => {
+  try {
+    const { amount, currency = 'INR', receipt_meta } = req.body;
+    if (!amount) return res.status(400).json({ error: 'amount (in paise) is required' });
 
-  if (!record) {
-    return res.json({ success: false, message: "OTP not found" });
+    const options = {
+      amount: parseInt(amount, 10),
+      currency,
+      receipt: `rcpt_${Date.now()}`,
+      payment_capture: 1,
+    };
+
+    const order = await razorpay.orders.create(options);
+    res.json({ order, keyId: RAZORPAY_KEY_ID });
+  } catch (err) {
+    console.error('create-order error:', err);
+    res.status(500).json({ error: 'Unable to create order' });
   }
-
-  if (Date.now() > record.expiresAt) {
-    delete otpStore[mobile];
-    return res.json({ success: false, message: "OTP expired" });
-  }
-
-  if (record.otp !== otp) {
-    return res.json({ success: false, message: "Invalid OTP" });
-  }
-
-  delete otpStore[mobile];
-  res.json({ success: true });
 });
 
-/* =================================================
-   COUPON VALIDATION (ONE TIME PER MOBILE)
-================================================= */
-app.post("/validate-coupon", (req, res) => {
-  const { mobile, coupon, planAmount } = req.body;
-
-  const VALID_COUPON = "M09B84";
-  const DISCOUNT_AMOUNT = 28;
-
-  const students = JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
-
-  const alreadyUsed = students.some(
-    s => s.mobile === mobile && s.coupon === VALID_COUPON
-  );
-
-  if (coupon !== VALID_COUPON) {
-    return res.json({
-      success: false,
-      message: "Invalid coupon",
-      amount: planAmount
-    });
+// Verify payment endpoint
+app.post('/verify-payment', (req, res) => {
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature, receipt_meta } = req.body;
+  if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+    return res.status(400).json({ verified: false, error: 'Missing parameters' });
   }
 
-  if (alreadyUsed) {
-    return res.json({
-      success: false,
-      message: "Coupon already used for this mobile",
-      amount: planAmount
-    });
-  }
+  const generated_signature = crypto
+    .createHmac('sha256', RAZORPAY_KEY_SECRET)
+    .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+    .digest('hex');
 
-  res.json({
-    success: true,
-    message: "Coupon applied",
-    amount: DISCOUNT_AMOUNT
-  });
+  const isValid = generated_signature === razorpay_signature;
+
+  if (isValid) {
+    console.log('Payment verified for order:', razorpay_order_id, 'payment:', razorpay_payment_id);
+    // TODO: persist in DB
+    return res.json({ verified: true });
+  } else {
+    console.warn('Payment verification failed', { razorpay_order_id, razorpay_payment_id });
+    return res.status(400).json({ verified: false });
+  }
 });
 
-/* =================================================
-   SAVE STUDENT (PAYMENT = PENDING)
-================================================= */
-app.post("/save-student", (req, res) => {
-  const { name, mobile, email, amount, coupon, status, paymentId } = req.body;
-
-  if (!name || !mobile || !amount) {
-    return res.json({ success: false, message: "Missing fields" });
+// Webhook endpoint: use raw body parser for signature verification
+app.post('/webhook', bodyParser.raw({ type: '*/*' }), (req, res) => {
+  const signature = req.headers['x-razorpay-signature'];
+  const payload = req.body;
+  if (!RAZORPAY_WEBHOOK_SECRET) {
+    console.warn('No webhook secret configured; webhook verification skipped');
+    return res.status(400).end();
   }
-
-  const students = JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
-
-  students.push({
-    name,
-    mobile,
-    email: email || null,
-    amount,
-    coupon: coupon || null,
-    paymentId: paymentId || null,
-    status: status || "PENDING",
-    date: new Date().toISOString()
-  });
-
-  fs.writeFileSync(DATA_FILE, JSON.stringify(students, null, 2));
-
-  res.json({ success: true });
+  const expected = crypto.createHmac('sha256', RAZORPAY_WEBHOOK_SECRET).update(payload).digest('hex');
+  if (signature === expected) {
+    const event = JSON.parse(payload.toString('utf8'));
+    console.log('Webhook verified. event:', event.event);
+    // handle events
+    return res.status(200).json({ ok: true });
+  } else {
+    console.warn('Invalid webhook signature');
+    return res.status(400).json({ ok: false });
+  }
 });
 
-/* =================================================
-   ADMIN – GET ALL STUDENTS
-================================================= */
-app.get("/students", (req, res) => {
-  const students = JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
-  res.json(students);
-});
-
-/* =================================================
-   ADMIN – VERIFY PAYMENT + WHATSAPP (STEP F)
-================================================= */
-app.post("/verify-payment", (req, res) => {
-  const { mobile } = req.body;
-
-  if (!mobile) {
-    return res.json({ success: false, message: "Mobile required" });
-  }
-
-  const students = JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
-  const index = students.findIndex(s => s.mobile === mobile);
-
-  if (index === -1) {
-    return res.json({ success: false, message: "Student not found" });
-  }
-
-  students[index].status = "VERIFIED";
-  students[index].verifiedAt = new Date().toISOString();
-
-  fs.writeFileSync(DATA_FILE, JSON.stringify(students, null, 2));
-
-  /* 📩 WhatsApp message */
-  const message = encodeURIComponent(
-    `Hi XenZ Team,\n\n` +
-    `Payment of ₹${students[index].amount} is done.\n` +
-    `Please share the Google Meet link.\n\n` +
-    `Mobile: ${students[index].mobile}`
-  );
-
-  const whatsappUrl = `https://wa.me/919640084068?text=${message}`;
-  // 🔴 Replace number above with your WhatsApp number
-
-  res.json({
-    success: true,
-    whatsappUrl
-  });
-});
-
-/* =================================================
-   SERVER START
-================================================= */
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
