@@ -125,34 +125,32 @@ input:focus{
   color:var(--accent);
 }
 
-/* ⚡ PAY OPTIONS */
-.pay-options{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-}
-.pay-btn{
-  background:#1a2544;
-  border:1px solid #303f6d;
-  height:70px;
+/* ⚡ PAY BUTTON */
+.pay-btn-main{
+  width:100%;
+  background:linear-gradient(135deg,#4dd6ff,#3b82f6);
+  border:none;
+  height:55px;
   border-radius:14px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
+  color:#000;
+  font-size:16px;
+  font-weight:700;
   cursor:pointer;
   transition:.3s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
 }
-.pay-btn:hover{
-  background:#253460;
-  border-color:var(--accent);
-  transform:translateY(-4px) scale(1.03);
+.pay-btn-main:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 30px rgba(77,214,255,.4);
 }
-.pay-btn img{
-  width:26px;
-  margin-bottom:4px;
+.pay-btn-main:disabled{
+  opacity:0.6;
+  cursor:not-allowed;
 }
-.pay-btn span{font-size:10px}
+.pay-btn-main svg{width:24px;height:24px}
 
 /* MEET */
 #meetSection{
@@ -245,27 +243,16 @@ footer{
 
     <div class="price-tag">₹37 Only</div>
 
-    <label style="text-align:center">Select Payment Method</label>
-
-    <div class="pay-options">
-      <div class="pay-btn" onclick="processPayment()">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQPegr0Gssr8mJB68oWAR_UAv-fJInA8PcAw&s">
-        <span>PhonePe</span>
-      </div>
-      <div class="pay-btn" onclick="processPayment()">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg">
-        <span>G Pay</span>
-      </div>
-      <div class="pay-btn" onclick="processPayment()">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg">
-        <span>Paytm</span>
-      </div>
-    </div>
+    <button class="pay-btn-main" id="payBtn" onclick="initiatePayment()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+      Pay Securely with Razorpay
+    </button>
 
     <div id="meetSection">
-      <h4>Enrollment Successful 🎉</h4>
-      <a href="https://meet.google.com/dmu-zzca-pvy" class="meet-link">Join Google Meet</a>
-      <div class="timer">Expires in <span id="clock">60:00</span></div>
+      <h4>Enrollment Successful!</h4>
+      <p style="font-size:13px;color:var(--muted);margin:10px 0">Your payment has been verified</p>
+      <a id="meetLink" href="#" class="meet-link" target="_blank">Join Training Session</a>
+      <p style="font-size:11px;color:var(--muted);margin-top:12px">Link also sent to your email</p>
     </div>
 
   </div>
@@ -282,8 +269,11 @@ footer{
   </div>
 </footer>
 
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-/* ❄️ SNOW */
+const API_BASE = 'http://localhost:5000';
+
+/* SNOW */
 const c=document.getElementById("snowCanvas"),x=c.getContext("2d");
 let w,h,f=[];
 function init(){
@@ -312,26 +302,97 @@ function snow(){
 addEventListener("resize",init);
 init();snow();
 
-/* PAYMENT */
-function processPayment(){
-  if(!userName.value||userMobile.value.length<10||!userEmail.value.includes("@")){
-    alert("Fill all details properly 😊");
+/* RAZORPAY PAYMENT */
+async function initiatePayment(){
+  const name = userName.value.trim();
+  const mobile = userMobile.value.trim();
+  const email = userEmail.value.trim();
+
+  if(!name || mobile.length < 10 || !email.includes("@")){
+    alert("Please fill all details correctly");
     return;
   }
-  location.href="upi://pay?pa=9640084068@ybl&pn=XenZ%20AI&am=37&cu=INR";
-  setTimeout(()=>{
-    document.querySelectorAll("input,label,.pay-options,.price-tag,.note").forEach(e=>e.style.display="none");
-    meetSection.style.display="block";
-    startTimer(3600);
-  },1800);
-}
-function startTimer(t){
-  const d=clock;
-  const i=setInterval(()=>{
-    let m=Math.floor(t/60),s=t%60;
-    d.textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
-    if(--t<0){clearInterval(i);d.textContent="EXPIRED";}
-  },1000);
+
+  const payBtn = document.getElementById('payBtn');
+  payBtn.disabled = true;
+  payBtn.innerHTML = 'Processing...';
+
+  try {
+    // Get Razorpay key
+    const keyRes = await fetch(`${API_BASE}/api/razorpay-key`);
+    const { key } = await keyRes.json();
+
+    // Create order
+    const orderRes = await fetch(`${API_BASE}/api/create-order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, mobile, email })
+    });
+    const order = await orderRes.json();
+
+    if(order.error){
+      alert('Failed to create order: ' + order.error);
+      payBtn.disabled = false;
+      payBtn.innerHTML = 'Pay Securely with Razorpay';
+      return;
+    }
+
+    // Open Razorpay checkout
+    const options = {
+      key: key,
+      amount: order.amount,
+      currency: order.currency,
+      name: 'XenZ Technologies',
+      description: 'AI Training Enrollment',
+      order_id: order.orderId,
+      prefill: {
+        name: name,
+        email: email,
+        contact: mobile
+      },
+      theme: {
+        color: '#4dd6ff'
+      },
+      handler: async function(response) {
+        // Verify payment
+        const verifyRes = await fetch(`${API_BASE}/api/verify-payment`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            name, mobile, email
+          })
+        });
+        const result = await verifyRes.json();
+
+        if(result.success){
+          // Show success section
+          document.querySelectorAll("input,label,.pay-btn-main,.price-tag,.note,h3").forEach(e=>e.style.display="none");
+          document.getElementById('meetSection').style.display = 'block';
+          document.getElementById('meetLink').href = result.meetLink;
+        } else {
+          alert('Payment verification failed. Please contact support.');
+        }
+      },
+      modal: {
+        ondismiss: function() {
+          payBtn.disabled = false;
+          payBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg> Pay Securely with Razorpay';
+        }
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+
+  } catch(err) {
+    console.error(err);
+    alert('Something went wrong. Please try again.');
+    payBtn.disabled = false;
+    payBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg> Pay Securely with Razorpay';
+  }
 }
 </script>
 
