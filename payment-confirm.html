@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Confirm Payment</title>
+<meta charset="UTF-8">
+<title>Redirecting... | XenZ</title>
+<meta http-equiv="refresh" content="0;url=enroll.html">
 <style>
 body{
   background:#050b1e;
@@ -11,39 +13,14 @@ body{
   justify-content:center;
   align-items:center;
   height:100vh;
-}
-.card{
-  background:#0d1636;
-  padding:28px;
-  border-radius:16px;
-  width:320px;
   text-align:center;
-}
-button{
-  margin-top:15px;
-  padding:12px;
-  width:100%;
-  background:#4dd6ff;
-  border:none;
-  border-radius:10px;
-  font-weight:600;
-  cursor:pointer;
 }
 </style>
 </head>
 <body>
-
-<div class="card">
-  <h3>Payment Completed?</h3>
-  <p>After finishing UPI payment, click below</p>
-  <button onclick="done()">I Paid</button>
+<div>
+  <p>Redirecting to enrollment page...</p>
+  <p><a href="enroll.html" style="color:#4dd6ff">Click here if not redirected</a></p>
 </div>
-
-<script>
-function done(){
-  window.location.href = "success.html";
-}
-</script>
-
 </body>
 </html>

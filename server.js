@@ -9,8 +9,18 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
+// Middleware - Configure CORS for production
+app.use(cors({
+    origin: [
+        'http://localhost:5000',
+        'http://127.0.0.1:5000',
+        'https://xenztechnologies.in',
+        'http://xenztechnologies.in',
+        'https://www.xenztechnologies.in',
+        'http://www.xenztechnologies.in'
+    ],
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
@@ -132,10 +142,8 @@ app.get('/api/razorpay-key', (req, res) => {
     res.json({ key: process.env.RAZORPAY_KEY_ID });
 });
 
-// Get Meet Link (only after payment verification)
-app.get('/api/meet-link', (req, res) => {
-    res.json({ meetLink: process.env.MEET_LINK });
-});
+// REMOVED: Unprotected meet-link endpoint was a security risk
+// The meet link is now only returned through /api/verify-payment after successful payment verification
 
 // Create Razorpay Order
 app.post('/api/create-order', async (req, res) => {
