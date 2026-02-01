@@ -24,11 +24,20 @@ app.use(cors({
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
-// Initialize Razorpay
-const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID,
-    key_secret: process.env.RAZORPAY_KEY_SECRET
-});
+// Initialize Razorpay (only if credentials are configured)
+let razorpay = null;
+let razorpayReady = false;
+
+if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+    razorpay = new Razorpay({
+        key_id: process.env.RAZORPAY_KEY_ID,
+        key_secret: process.env.RAZORPAY_KEY_SECRET
+    });
+    razorpayReady = true;
+    console.log('Razorpay initialized successfully');
+} else {
+    console.log('WARNING: Razorpay credentials not configured. Payment features will not work.');
+}
 
 // Google Sheets Authentication
 let sheets;
@@ -133,7 +142,7 @@ app.get('/api/health', (req, res) => {
     res.json({
         status: 'ok',
         sheetsConnected: sheetsReady,
-        razorpayConfigured: !!(process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET)
+        razorpayConfigured: razorpayReady
     });
 });
 
@@ -148,6 +157,10 @@ app.get('/api/razorpay-key', (req, res) => {
 // Create Razorpay Order
 app.post('/api/create-order', async (req, res) => {
     try {
+        if (!razorpayReady) {
+            return res.status(503).json({ error: 'Payment service not configured' });
+        }
+
         const { name, mobile, email } = req.body;
 
         if (!name || !mobile || !email) {
