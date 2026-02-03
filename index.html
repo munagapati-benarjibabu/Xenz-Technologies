@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link  rel="icon" type="image/x-ioc" href="logo.png"/>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>XenZ Technologies | AI Skills & Tools</title>
@@ -85,19 +84,15 @@ header .container{
   align-items:center;
 }
 
-/* LOGO START */
+/* Logo */
 .logo{
   display:flex;
   align-items:center;
 }
 .logo img{
-  /* Adjusted height to make sure the logo is visible and clear */
-  height: 99px; 
-  width: auto;
-  object-fit: contain;
-  display: block;
+  height:99px;
+  width:auto;
 }
-/* LOGO END */
 
 /* Nav */
 nav a{
@@ -222,21 +217,14 @@ footer{
     flex-direction:column;
     gap:14px;
   }
-
-  .logo{
-    justify-content:center;
-  }
-
   nav{
     display:flex;
     justify-content:center;
     flex-wrap:wrap;
   }
-
   nav a{
     margin:8px 12px 0;
   }
-
   .footer-flex{
     flex-direction:column;
     gap:10px;
@@ -253,10 +241,9 @@ footer{
   <div class="container">
     <div class="logo">
       <a href="index.html">
-        <img src="./logo.png" alt="XenZ Technologies Logo" class="logo">
+        <img src="xzt.png" alt="Xenz Logo">
       </a>
     </div>
-
     <nav>
       <a href="index.html">Home</a>
       <a href="enroll.html">Enroll</a>
@@ -292,26 +279,36 @@ footer{
 <section>
   <div class="container">
     <div class="features">
+
       <div class="feature">
         <div class="icon">🤖</div>
         <h3>Live AI Classes</h3>
         <p>Daily interactive sessions with real-world use cases.</p>
       </div>
-      <div class="feature">
-        <div class="icon">⚡</div>
-        <h3>Productivity Tools</h3>
-        <p>AI tools that save hours every day.</p>
-      </div>
+
+      <!-- ⚡ PRODUCTIVITY TOOLS (CLICKABLE, UI SAME) -->
+      <a href="ai-tools.html" style="text-decoration:none; color:inherit;">
+  <div class="feature">
+    <div class="icon">⚡</div>
+    <h3>Productivity Tools</h3>
+    <p>AI tools that save hours every day.</p>
+  </div>
+      </a>
+
+
       <div class="feature">
         <div class="icon">📄</div>
         <h3>AI Resume Builder</h3>
         <p>ATS-friendly resumes in minutes.</p>
       </div>
-      <div class="feature">
+
+      <!-- 🎓 CERTIFICATION (CLICKABLE, UI SAME) -->
+      <div class="feature" onclick="goToCertificate()" style="cursor:pointer;">
         <div class="icon">🎓</div>
         <h3>Certification</h3>
         <p>Certificates to boost your profile.</p>
       </div>
+
     </div>
   </div>
 </section>
@@ -347,10 +344,19 @@ footer{
 </footer>
 
 <script>
+function goToCertificate(){
+  window.location.href = "certificate.html";
+}
+
+function goToProductivityTools(){
+  window.location.href = "productivity-tools.html";
+}
+
+/* Snow animation */
 const canvas = document.getElementById("snowCanvas");
 const ctx = canvas.getContext("2d");
-
 let w,h;
+
 function resize(){
   w = canvas.width = window.innerWidth;
   h = canvas.height = window.innerHeight;
@@ -385,7 +391,4 @@ animate();
 </script>
 
 </body>
-
 </html>
-
-
