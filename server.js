@@ -68,6 +68,43 @@ async function initGoogleSheets() {
 
 initGoogleSheets();
 
+// WhatsApp Cloud API - Send enrollment confirmation
+async function sendWhatsAppConfirmation(phone, name) {
+    if (!process.env.WHATSAPP_PHONE_NUMBER_ID || !process.env.WHATSAPP_ACCESS_TOKEN) {
+        console.log('WhatsApp not configured. Skipping message.');
+        return;
+    }
+
+    const url = `https://graph.facebook.com/v21.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`;
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${process.env.WHATSAPP_ACCESS_TOKEN}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            messaging_product: 'whatsapp',
+            to: `91${phone}`,
+            type: 'template',
+            template: {
+                name: process.env.WHATSAPP_TEMPLATE_NAME || 'enrollment_confirmation',
+                language: { code: 'en' },
+                components: [{
+                    type: 'body',
+                    parameters: [{ type: 'text', text: name }]
+                }]
+            }
+        })
+    });
+
+    const result = await response.json();
+    if (result.error) {
+        throw new Error(result.error.message);
+    }
+    return result;
+}
+
 // Local storage fallback (when Google Sheets is not configured)
 let localStudents = [];
 
@@ -142,7 +179,8 @@ app.get('/api/health', (req, res) => {
     res.json({
         status: 'ok',
         sheetsConnected: sheetsReady,
-        razorpayConfigured: razorpayReady
+        razorpayConfigured: razorpayReady,
+        whatsappConfigured: !!(process.env.WHATSAPP_PHONE_NUMBER_ID && process.env.WHATSAPP_ACCESS_TOKEN)
     });
 });
 
@@ -225,6 +263,14 @@ app.post('/api/verify-payment', async (req, res) => {
         };
 
         await saveToSheets(studentData);
+
+        // Send WhatsApp enrollment confirmation
+        try {
+            await sendWhatsAppConfirmation(mobile, name);
+            console.log('WhatsApp confirmation sent to:', mobile);
+        } catch (whatsappError) {
+            console.error('WhatsApp send failed:', whatsappError.message);
+        }
 
         res.json({
             success: true,
@@ -341,6 +387,7 @@ app.listen(PORT, () => {
 ║  Server running at: http://localhost:${PORT}         ║
 ║  Google Sheets: ${sheetsReady ? 'Connected' : 'Not configured (using local storage)'}
 ║  Razorpay: ${process.env.RAZORPAY_KEY_ID ? 'Configured' : 'Not configured'}
+║  WhatsApp: ${process.env.WHATSAPP_PHONE_NUMBER_ID ? 'Configured' : 'Not configured'}
 ╚═══════════════════════════════════════════════════╝
     `);
 });
