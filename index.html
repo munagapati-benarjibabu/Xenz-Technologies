@@ -9,11 +9,11 @@
 
 <style>
 :root{
-  --bg-dark:#050b1e;
-  --bg-light:#0d1636;
+  --bg-dark:#ffffff;
+  --bg-light:#eef5ff;
   --accent:#4dd6ff;
-  --text:#ffffff;
-  --muted:#b7c0ff;
+  --text:#102044;
+  --muted:#53627e;
 }
 
 *{
@@ -24,17 +24,80 @@
 }
 
 body{
-  background:linear-gradient(180deg,var(--bg-dark),var(--bg-light));
+  position:relative;
+  min-height:100vh;
+  background:
+    url("kids-ideas-bg.png") no-repeat right 40px top 560px / min(650px,60vw) auto,
+    radial-gradient(circle at 12% 8%,rgba(77,214,255,.22),transparent 28%),
+    radial-gradient(circle at 86% 18%,rgba(155,123,255,.18),transparent 30%),
+    radial-gradient(circle at 50% 100%,rgba(37,99,235,.10),transparent 36%),
+    linear-gradient(145deg,#ffffff 0%,#f7fbff 52%,#eef5ff 100%);
   color:var(--text);
   overflow-x:hidden;
 }
 
-/* Snow */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.42;
+  background-image:
+    linear-gradient(rgba(71,126,203,.10) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(71,126,203,.10) 1px,transparent 1px);
+  background-size:72px 72px;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.8),transparent 78%);
+  z-index:0;
+}
+
+body::after{
+  content:"";
+  position:fixed;
+  width:42vw;
+  height:42vw;
+  right:-18vw;
+  bottom:-20vw;
+  border-radius:50%;
+  background:rgba(77,214,255,.16);
+  filter:blur(90px);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* Ambient particles and glows */
 #snowCanvas{
   position:fixed;
   inset:0;
   pointer-events:none;
   z-index:0;
+  opacity:.4;
+}
+
+.ambient-orb{
+  position:fixed;
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  pointer-events:none;
+  filter:blur(70px);
+  opacity:.18;
+  z-index:0;
+  animation:drift 14s ease-in-out infinite alternate;
+}
+.ambient-orb.one{
+  top:18%;
+  left:-100px;
+  background:#4dd6ff;
+}
+.ambient-orb.two{
+  top:50%;
+  right:-120px;
+  background:#9b7bff;
+  animation-delay:-5s;
+}
+@keyframes drift{
+  from{transform:translate3d(0,-18px,0) scale(.95)}
+  to{transform:translate3d(25px,22px,0) scale(1.08)}
 }
 
 /* Common */
@@ -92,6 +155,7 @@ header .container{
 .logo img{
   height:99px;
   width:auto;
+  filter:brightness(0) saturate(100%) invert(14%) sepia(21%) saturate(1676%) hue-rotate(183deg) brightness(89%) contrast(93%);
 }
 
 /* Nav */
@@ -126,7 +190,9 @@ nav a:hover{
   margin-top:40px;
 }
 .stat{
-  background:rgba(255,255,255,.05);
+  background:rgba(255,255,255,.72);
+  border:1px solid rgba(86,128,194,.14);
+  box-shadow:0 12px 35px rgba(42,75,130,.08);
   padding:24px;
   border-radius:18px;
 }
@@ -142,7 +208,9 @@ nav a:hover{
   gap:24px;
 }
 .feature{
-  background:rgba(255,255,255,.05);
+  background:rgba(255,255,255,.78);
+  border:1px solid rgba(86,128,194,.14);
+  box-shadow:0 12px 35px rgba(42,75,130,.08);
   padding:26px;
   border-radius:22px;
   transition:.3s;
@@ -183,7 +251,9 @@ nav a:hover{
   gap:20px;
 }
 .testimonial{
-  background:rgba(255,255,255,.06);
+  background:rgba(255,255,255,.78);
+  border:1px solid rgba(86,128,194,.14);
+  box-shadow:0 12px 35px rgba(42,75,130,.08);
   padding:24px;
   border-radius:20px;
 }
@@ -213,6 +283,10 @@ footer{
 
 /* Mobile */
 @media(max-width:768px){
+  body{
+    background-size:330px auto,auto,auto,auto,auto;
+    background-position:center 700px,left top,right top,center bottom,center;
+  }
   header .container{
     flex-direction:column;
     gap:14px;
@@ -236,6 +310,8 @@ footer{
 <body>
 
 <canvas id="snowCanvas"></canvas>
+<div class="ambient-orb one" aria-hidden="true"></div>
+<div class="ambient-orb two" aria-hidden="true"></div>
 
 <header>
   <div class="container">
@@ -352,7 +428,7 @@ function goToProductivityTools(){
   window.location.href = "productivity-tools.html";
 }
 
-/* Snow animation */
+/* Ambient particle animation */
 const canvas = document.getElementById("snowCanvas");
 const ctx = canvas.getContext("2d");
 let w,h;
@@ -365,25 +441,32 @@ resize();
 window.addEventListener("resize", resize);
 
 const flakes=[];
-for(let i=0;i<180;i++){
+for(let i=0;i<120;i++){
   flakes.push({
     x:Math.random()*w,
     y:Math.random()*h,
-    r:Math.random()*3+2,
-    s:Math.random()*2+1
+    r:Math.random()*1.8+.5,
+    s:Math.random()*.35+.08,
+    a:Math.random()*.65+.2,
+    drift:Math.random()*.5-.25
   });
 }
 
 function animate(){
   ctx.clearRect(0,0,w,h);
-  ctx.fillStyle="rgba(255,255,255,.8)";
   flakes.forEach(f=>{
     f.y+=f.s;
+    f.x+=f.drift;
     if(f.y>h){
-      f.y=-10;
+      f.y=-4;
       f.x=Math.random()*w;
     }
-    ctx.fillRect(f.x,f.y,f.r,f.r);
+    if(f.x<0) f.x=w;
+    if(f.x>w) f.x=0;
+    ctx.beginPath();
+    ctx.fillStyle=`rgba(150,220,255,${f.a})`;
+    ctx.arc(f.x,f.y,f.r,0,Math.PI*2);
+    ctx.fill();
   });
   requestAnimationFrame(animate);
 }
