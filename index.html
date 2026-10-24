@@ -4,6 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>XenZ Technologies | AI Skills & Tools</title>
+<meta name="description" content="Learn practical AI tools and skills through live classes, projects, and career-ready training from XenZ Technologies.">
+<meta name="theme-color" content="#eef5ff">
+<link rel="icon" href="xzt.png" type="image/png">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
@@ -167,6 +170,7 @@ nav a{
 nav a:hover{
   color:var(--accent);
 }
+.menu-toggle{display:none;border:1px solid rgba(86,128,194,.22);background:rgba(255,255,255,.8);color:var(--text);border-radius:10px;padding:8px 12px;font-size:1.1rem;cursor:pointer}
 
 /* Hero */
 .hero{
@@ -280,6 +284,16 @@ footer{
 .footer-links a:hover{
   color:var(--accent);
 }
+.hero-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.secondary-btn{background:rgba(255,255,255,.72);border:1px solid rgba(86,128,194,.2);color:var(--text)}
+.courses{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.course-card{background:rgba(255,255,255,.9);border:1px solid rgba(86,128,194,.14);border-radius:20px;padding:24px;box-shadow:0 12px 35px rgba(42,75,130,.08)}
+.course-card h3{margin:12px 0 8px}
+.course-card .course-meta{font-size:.82rem;color:var(--accent);font-weight:700}
+.course-card a{display:inline-block;margin-top:16px;color:#1769aa;font-weight:700;text-decoration:none}
+.trust-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;text-align:center}
+.trust-item{background:rgba(255,255,255,.72);border:1px solid rgba(86,128,194,.12);border-radius:16px;padding:18px}
+.trust-item strong{display:block;margin-bottom:5px}
 
 /* Mobile */
 @media(max-width:768px){
@@ -311,11 +325,15 @@ footer{
 @media(max-width:620px){
   header{padding:10px 0}
   .logo img{height:72px}
+  .menu-toggle{display:block}
+  nav{display:none}
+  nav.open{display:flex;flex-direction:column;align-items:center;gap:2px}
   nav a{margin:6px 9px 0;font-size:.88rem}
   section{padding:38px 0}
   .hero h1{font-size:2.05rem;line-height:1.15}
   .hero p{font-size:.92rem;padding:0 10px}
   .stats,.features{grid-template-columns:1fr;gap:14px}
+  .courses,.trust-strip{grid-template-columns:1fr;gap:14px}
   .stat,.feature,.testimonial{padding:20px}
   .cta{border-radius:20px;padding:28px 16px}
   .footer-links a{margin:0 7px}
@@ -336,7 +354,8 @@ footer{
         <img src="xzt.png" alt="Xenz Logo">
       </a>
     </div>
-    <nav>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav">☰</button>
+    <nav id="main-nav">
       <a href="index.html">Home</a>
       <a href="enroll.html">Enroll</a>
       <a href="ai-tools.html">AI Tools</a>
@@ -347,9 +366,12 @@ footer{
 
 <section class="hero">
   <div class="container">
-    <h1>Master AI Tools & Skills</h1>
-    <p>Live AI classes, smart tools, and career-ready learning designed for students and professionals.</p>
-    <a href="enroll.html" class="btn">Enroll Now</a>
+    <h1>Learn AI Tools. Build Your Future.</h1>
+    <p>Live practical classes, guided projects, and career-ready AI skills for students and professionals.</p>
+    <div class="hero-actions">
+      <a href="enroll.html" class="btn">Enroll Now</a>
+      <a href="#courses" class="btn secondary-btn">View Courses</a>
+    </div>
 
     <div class="stats">
       <div class="stat">
@@ -364,6 +386,32 @@ footer{
         <h2>4.2★</h2>
         <p>Average Rating</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<section id="courses">
+  <div class="container">
+    <h2 style="text-align:center;margin-bottom:22px">Choose Your Learning Path</h2>
+    <div class="courses">
+      <article class="course-card">
+        <span class="course-meta">STARTER</span>
+        <h3>AI Tools Essentials</h3>
+        <p>Understand useful AI tools for study, work, writing, and productivity.</p>
+        <a href="enroll.html">Start learning →</a>
+      </article>
+      <article class="course-card">
+        <span class="course-meta">PRACTICAL</span>
+        <h3>AI Productivity Bootcamp</h3>
+        <p>Build repeatable workflows that help you save time and create better results.</p>
+        <a href="enroll.html">Join the bootcamp →</a>
+      </article>
+      <article class="course-card">
+        <span class="course-meta">CAREER</span>
+        <h3>AI Career Launchpad</h3>
+        <p>Learn portfolio, resume, and interview skills to present your AI abilities clearly.</p>
+        <a href="enroll.html">Explore career skills →</a>
+      </article>
     </div>
   </div>
 </section>
@@ -409,6 +457,14 @@ footer{
   <div class="container cta">
     <h2>Start Your AI Journey Today</h2>
     <p>• Affordable plans • Live support • Beginner friendly</p>
+  </div>
+</section>
+
+<section>
+  <div class="container trust-strip">
+    <div class="trust-item"><strong>Live guidance</strong><p>Learn with practical support.</p></div>
+    <div class="trust-item"><strong>Project-based</strong><p>Practice with real use cases.</p></div>
+    <div class="trust-item"><strong>Certificate ready</strong><p>Show what you have learned.</p></div>
   </div>
 </section>
 
@@ -487,6 +543,11 @@ function animate(){
   requestAnimationFrame(animate);
 }
 animate();
+</script>
+<script>
+const menuToggle=document.querySelector('.menu-toggle');
+const mainNav=document.querySelector('#main-nav');
+if(menuToggle&&mainNav){menuToggle.addEventListener('click',()=>{const open=mainNav.classList.toggle('open');menuToggle.setAttribute('aria-expanded',String(open));});}
 </script>
 
 </body>

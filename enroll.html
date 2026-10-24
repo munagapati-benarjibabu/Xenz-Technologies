@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>Enroll | XenZ</title>
+<meta name="description" content="Enroll in practical live AI training from XenZ Technologies.">
+<meta name="theme-color" content="#eef5ff">
+<link rel="icon" href="xzt.png" type="image/png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -204,6 +207,8 @@ footer{
   nav{display:none}
   .card{padding:26px}
 }
+.menu-toggle{display:none;border:1px solid rgba(86,128,194,.22);background:rgba(255,255,255,.8);color:#102044;border-radius:10px;padding:8px 12px;font-size:1.1rem;cursor:pointer}
+@media(max-width:700px){.menu-toggle{display:block}nav{display:none!important}nav.open{display:flex!important;flex-wrap:wrap;justify-content:center}}
 </style>
 <style>
 /* Shared light kids-learning theme */
@@ -214,6 +219,9 @@ header{background:rgba(255,255,255,.84);border-bottom-color:rgba(86,128,194,.16)
 nav a,label{color:#53627e}
 .card{background:rgba(255,255,255,.96);box-shadow:0 25px 60px rgba(42,75,130,.14)}
 .note{color:#53627e}
+.benefits{list-style:none;display:grid;gap:8px;margin:18px 0;padding:0;color:#53627e;font-size:13px}
+.benefits li::before{content:"✓";color:#1597c4;font-weight:700;margin-right:8px}
+.payment-note{text-align:center;color:#53627e;font-size:11px;margin-top:12px}
 input{background:#fff;color:#102044;border-color:rgba(86,128,194,.25)}
 #meetSection{background:#eef5ff}
 footer{background:rgba(255,255,255,.72);border-top-color:rgba(86,128,194,.16)}
@@ -249,7 +257,8 @@ footer{background:rgba(255,255,255,.72);border-top-color:rgba(86,128,194,.16)}
         <img src="xzt.png" alt="Xenz Logo">
       </a>
     </div>
-    <nav>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav">☰</button>
+    <nav id="main-nav">
       <a href="index.html">Home</a>
       <a href="ai-tools.html">AI Tools</a>
       <a href="content.html">Contact</a>
@@ -262,6 +271,11 @@ footer{background:rgba(255,255,255,.72);border-top-color:rgba(86,128,194,.16)}
 
     <h3>Enroll in Live AI Training</h3>
     <p class="note">For best payment experience, use mobile UPI 📱</p>
+    <ul class="benefits">
+      <li>Live practical AI class</li>
+      <li>Beginner-friendly tools and examples</li>
+      <li>Certificate-ready learning path</li>
+    </ul>
 
     <label>Full Name</label>
     <input id="userName" placeholder="Your name">
@@ -278,6 +292,7 @@ footer{background:rgba(255,255,255,.72);border-top-color:rgba(86,128,194,.16)}
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
       Pay Securely with Razorpay
     </button>
+    <p class="payment-note">Secure checkout. Please review your details before payment.</p>
 
     <div id="meetSection">
       <h4>Enrollment Successful!</h4>
@@ -426,6 +441,11 @@ async function initiatePayment(){
     payBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg> Pay Securely with Razorpay';
   }
 }
+</script>
+<script>
+const menuToggle=document.querySelector('.menu-toggle');
+const mainNav=document.querySelector('#main-nav');
+if(menuToggle&&mainNav){menuToggle.addEventListener('click',()=>{const open=mainNav.classList.toggle('open');menuToggle.setAttribute('aria-expanded',String(open));});}
 </script>
 
 </body>
