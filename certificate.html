@@ -4,6 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Certificate - XenZ Technologies</title>
+<meta name="description" content="See the XenZ Technologies certificate and the practical AI skills it represents.">
+<meta name="theme-color" content="#eef5ff">
+<link rel="icon" href="xzt.png" type="image/png">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
@@ -24,8 +27,12 @@
 }
 
 body{
-  background:linear-gradient(180deg,var(--bg-dark),var(--bg-light));
-  color:var(--text);
+  background:
+    url("kids-ideas-bg.png") no-repeat right 20px top 260px / min(650px,60vw) auto,
+    radial-gradient(circle at 12% 8%,rgba(77,214,255,.22),transparent 28%),
+    radial-gradient(circle at 86% 18%,rgba(155,123,255,.18),transparent 30%),
+    linear-gradient(145deg,#fff 0%,#f7fbff 52%,#eef5ff 100%);
+  color:#102044;
   overflow-x:hidden;
 }
 
@@ -35,6 +42,7 @@ body{
   inset:0;
   pointer-events:none;
   z-index:0;
+  display:none;
 }
 
 /* Common */
@@ -71,6 +79,7 @@ header .container{
 .logo img{
   height:99px;
   width:auto;
+  filter:brightness(0) saturate(100%) invert(14%) sepia(21%) saturate(1676%) hue-rotate(183deg) brightness(89%) contrast(93%);
 }
 
 /* Nav */
@@ -82,6 +91,7 @@ nav a{
 nav a:hover{
   color:var(--accent);
 }
+.menu-toggle{display:none;border:1px solid rgba(86,128,194,.22);background:rgba(255,255,255,.8);color:#102044;border-radius:10px;padding:8px 12px;font-size:1.1rem;cursor:pointer}
 
 /* Certificate Layout */
 .cert-layout{
@@ -93,14 +103,14 @@ nav a:hover{
 
 /* Compact Glass Cards */
 .cert-side{
-  background: rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.9);
   backdrop-filter: blur(14px);
   border-radius:20px;
   padding:20px 36px;
   font-size:.95rem;
-  color:var(--muted);
-  border:1px solid rgba(255,255,255,0.12);
-  box-shadow:0 18px 40px rgba(0,0,0,.25);
+  color:#53627e;
+  border:1px solid rgba(86,128,194,.14);
+  box-shadow:0 18px 40px rgba(42,75,130,.12);
 
   display:flex;
   flex-direction:column;
@@ -115,18 +125,19 @@ nav a:hover{
 
 .cert-side p{
   margin:0;
+  color:#53627e;
 }
 
 /* Certificate Image */
 .certificate-img{
   max-width:75%;
   height:auto;
-  box-shadow:0 30px 80px rgba(0,0,0,.35);
+  box-shadow:0 30px 80px rgba(42,75,130,.18);
 }
 
 /* Footer */
 footer{
-  border-top:1px solid rgba(255,255,255,.1);
+  border-top:1px solid rgba(86,128,194,.16);
   padding:22px 0;
   font-size:.85rem;
   position:relative;
@@ -140,7 +151,7 @@ footer{
 }
 .footer-links a{
   margin-left:18px;
-  color:var(--muted);
+  color:#53627e;
   text-decoration:none;
 }
 .footer-links a:hover{
@@ -179,6 +190,20 @@ footer{
     flex-direction:column;
   }
 }
+@media(max-width:700px){
+  body{background-size:330px auto,auto,auto,auto;background-position:center 680px,left top,right top,center}
+  header .container{padding:8px 14px}
+  .logo img{height:62px}
+  .menu-toggle{display:block}
+  nav{display:none!important}
+  nav.open{display:flex!important;flex-wrap:wrap;justify-content:center}
+  nav a{margin:4px 8px;font-size:13px}
+  section{padding:34px 0}
+  .cert-side{padding:18px 20px}
+  .certificate-img{max-width:100%}
+  footer .footer-flex{text-align:center;gap:10px;padding:14px}
+  .footer-links a{margin:0 7px}
+}
 </style>
 </head>
 
@@ -193,7 +218,8 @@ footer{
         <img src="xzt.png" alt="Xenz Logo">
       </a>
     </div>
-    <nav>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav">☰</button>
+    <nav id="main-nav">
       <a href="index.html">Home</a>
       <a href="enroll.html">Enroll</a>
       <a href="ai-tools.html">AI Tools</a>
@@ -275,6 +301,11 @@ function animate(){
   requestAnimationFrame(animate);
 }
 animate();
+</script>
+<script>
+const menuToggle=document.querySelector('.menu-toggle');
+const mainNav=document.querySelector('#main-nav');
+if(menuToggle&&mainNav){menuToggle.addEventListener('click',()=>{const open=mainNav.classList.toggle('open');menuToggle.setAttribute('aria-expanded',String(open));});}
 </script>
 
 </body>
